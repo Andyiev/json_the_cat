@@ -1,17 +1,17 @@
+// breedFetcher.js
 const request = require('request');
-const arg = process.argv.slice(2)[0];
-console.log(arg);
-
-request(`https://api.thecatapi.com/v1/breeds/search?q=${arg}`, (error, response, body) => {
-  if (error) {
-    console.log("Request failed: ",error);
-  } else {
-    const data = JSON.parse(body);
-    if (data.length === 0) {
-      console.log("There is no cat with name");
+// Here is a function to organise a request to get some info from the site
+const fetchBreedDescription = function(breedName,callback) {
+  request(`https://api.thecatapi.com/v1/breeds/search?q=${breedName}`, (error, response, body) => {
+    if (error) {
+      console.log("Request failed: ",error);// If the request is failed
     } else {
-      console.log(data[0].description);
-      console.log(typeof data);
+      const data = JSON.parse(body);
+      if (data.length === 0) {
+        callback(("There is no cat with name " + breedName),null); //There is no cat with this breed name, because we received empty data (empty string (array))
+      }
+      callback(null,data); // Getting information  
     }
-  }
-});
+  });
+};
+module.exports = {fetchBreedDescription};
